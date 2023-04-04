@@ -1,3 +1,9 @@
 spring:
   datasource:
-    username: root
+    username: postgres
+    password: root
+    url: jdbc:postgresql://localhost:5432/markup
+  jpa:
+    show-sql: true
+  liquibase:
+    enabled: false
