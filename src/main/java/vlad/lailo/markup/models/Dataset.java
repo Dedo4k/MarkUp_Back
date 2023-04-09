@@ -1,12 +1,20 @@
 package vlad.lailo.markup.models;
 
-import java.nio.file.Path;
-
 public class Dataset {
 
     private String name;
 
-    private Path path;
+    //progress
+    //last modify
+    //who modify
+    //status
+    //owner
 
-    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
