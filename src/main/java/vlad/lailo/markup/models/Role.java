@@ -13,7 +13,7 @@ public class Role implements GrantedAuthority {
     @Id
     private String id;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private final List<Operation> operations = new ArrayList<>();
 
     @Override
