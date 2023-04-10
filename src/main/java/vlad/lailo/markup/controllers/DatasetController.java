@@ -4,14 +4,19 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import vlad.lailo.markup.models.Dataset;
+import vlad.lailo.markup.models.User;
 import vlad.lailo.markup.services.DatasetService;
 import vlad.lailo.markup.services.StorageService;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -42,5 +47,10 @@ public class DatasetController {
     @GetMapping("/datasets")
     public ResponseEntity<List<Dataset>> getLoadedDatasets() {
         return ResponseEntity.ok(datasetService.getLoadedDatasets());
+    }
+
+    @GetMapping("/datasets/available")
+    public ResponseEntity<List<Dataset>> getAvailableDatasets(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(Collections.emptyList());
     }
 }

@@ -5,9 +5,16 @@ spring:
     url: jdbc:postgresql://localhost:5432/markup
   jpa:
     show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
   liquibase:
-    enabled: false
-
+    enabled: true
+    change-log: db/changelog/db.changelog-master.yaml
+  security:
+    user:
+      name: root
+      password: password
 datasets:
   storage:
     location: ./datasets
