@@ -18,3 +18,6 @@ spring:
 datasets:
   storage:
     location: ./datasets
+  extensions:
+    image: jpg, JPG, png, PNG, jpeg, JPEG
+    layout: json, xml

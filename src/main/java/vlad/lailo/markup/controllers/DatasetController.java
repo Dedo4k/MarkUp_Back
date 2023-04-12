@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vlad.lailo.markup.models.Data;
 import vlad.lailo.markup.models.Dataset;
 import vlad.lailo.markup.models.User;
 import vlad.lailo.markup.services.DatasetService;
@@ -52,5 +54,26 @@ public class DatasetController {
     @GetMapping("/datasets/available")
     public ResponseEntity<List<Dataset>> getAvailableDatasets(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    @GetMapping("/datasets/{datasetName}/size")
+    public ResponseEntity<Integer> getDatasetSize(@PathVariable String datasetName) {
+        return ResponseEntity.ok(datasetService.getDataMap(datasetName).keySet().size());
+    }
+
+    @GetMapping("/datasets/{datasetName}")
+    public ResponseEntity<List<Data>> getDataset(@PathVariable String datasetName) {
+        return ResponseEntity.ok(datasetService.getDataByDatasetName(datasetName).subList(0, 100));
+    }
+
+    @GetMapping("/datasets/{datasetName}/names")
+    public ResponseEntity<List<String>> getDatasetNames(@PathVariable String datasetName) {
+        return ResponseEntity.ok(datasetService.getDataMap(datasetName).keySet().stream().sorted().toList());
+    }
+
+    @GetMapping("/datasets/{datasetName}/{dataName}")
+    public ResponseEntity<Data> getDataFromDataset(@PathVariable String datasetName,
+                                                   @PathVariable String dataName) {
+        return ResponseEntity.ok(datasetService.getDataFromDataset(datasetName, dataName));
     }
 }
