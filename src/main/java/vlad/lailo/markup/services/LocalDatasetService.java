@@ -119,6 +119,7 @@ public class LocalDatasetService implements DatasetService {
         try {
             Path layout = getLayoutPath(paths);
             try (Stream<String> lines = Files.lines(layout)) {
+                data.setLayoutType(FileHelper.fileExtension(layout.toString()));
                 data.setLayoutName(layout.getFileName().toString());
                 data.setLayout(lines.collect(Collectors.joining("\n")));
             }

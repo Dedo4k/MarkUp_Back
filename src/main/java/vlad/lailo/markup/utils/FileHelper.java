@@ -1,5 +1,7 @@
 package vlad.lailo.markup.utils;
 
+import java.util.Locale;
+
 public class FileHelper {
 
     public static String filenameWithoutExtension(String filename) {
@@ -7,6 +9,6 @@ public class FileHelper {
     }
 
     public static String fileExtension(String filename) {
-        return filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+        return filename.substring(filename.lastIndexOf(".") + 1).toLowerCase(Locale.ROOT);
     }
 }

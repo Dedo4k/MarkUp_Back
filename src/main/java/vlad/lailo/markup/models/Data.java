@@ -6,6 +6,7 @@ public class Data {
     private String dataName;
     private String imageName;
     private byte[] imageBytes;
+    private String layoutType;
     private String layoutName;
     private String layout;
 
@@ -42,6 +43,14 @@ public class Data {
 
     public void setImageBytes(byte[] imageBytes) {
         this.imageBytes = imageBytes;
+    }
+
+    public String getLayoutType() {
+        return layoutType;
+    }
+
+    public void setLayoutType(String layoutType) {
+        this.layoutType = layoutType;
     }
 
     public String getLayoutName() {
