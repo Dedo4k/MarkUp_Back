@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vlad.lailo.markup.models.Data;
 import vlad.lailo.markup.models.Dataset;
 import vlad.lailo.markup.models.User;
@@ -75,5 +73,12 @@ public class DatasetController {
     public ResponseEntity<Data> getDataFromDataset(@PathVariable String datasetName,
                                                    @PathVariable String dataName) {
         return ResponseEntity.ok(datasetService.getDataFromDataset(datasetName, dataName));
+    }
+
+    @PostMapping("/datasets/{datasetName}/{dataName}")
+    public ResponseEntity<Data> updateDataFromDataset(@PathVariable String datasetName,
+                                                      @PathVariable String dataName,
+                                                      @RequestParam("file") MultipartFile layout) {
+        return ResponseEntity.ok(datasetService.updateDataLayout(datasetName, dataName, layout));
     }
 }

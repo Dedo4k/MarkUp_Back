@@ -2,6 +2,7 @@ package vlad.lailo.markup.services;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import vlad.lailo.markup.exceptions.DataImageNotFoundException;
 import vlad.lailo.markup.exceptions.DataLayoutNotFoundException;
 import vlad.lailo.markup.exceptions.DatasetNotFoundException;
@@ -11,13 +12,15 @@ import vlad.lailo.markup.models.Dataset;
 import vlad.lailo.markup.utils.FileHelper;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,6 +86,24 @@ public class LocalDatasetService implements DatasetService {
         } catch (DataImageNotFoundException ex) {
             throw new RuntimeException(ex.getMessage());
         }
+    }
+
+    @Override
+    public Data updateDataLayout(String datasetName, String dataName, MultipartFile layout) {
+        Path layoutPath = null;
+        try {
+            layoutPath = getLayoutPath(getDataMap(datasetName).get(dataName));
+        } catch (DataLayoutNotFoundException e) {
+            layoutPath = Paths.get(path).resolve(datasetName).resolve(Objects.requireNonNull(layout.getOriginalFilename()));
+        }
+
+        try (InputStream is = layout.getInputStream()) {
+            Files.copy(is, layoutPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            throw new RuntimeException("File update failed.");
+        }
+
+        return getDataFromDataset(datasetName, dataName);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package vlad.lailo.markup.services;
 
+import org.springframework.web.multipart.MultipartFile;
 import vlad.lailo.markup.models.Data;
 import vlad.lailo.markup.models.Dataset;
 
@@ -21,6 +22,8 @@ public interface DatasetService {
     List<Data> getDataByDatasetName(String datasetName);
 
     Data getDataFromDataset(String datasetName, String dataName);
+
+    Data updateDataLayout(String datasetName, String dataName, MultipartFile layout);
 
     Stream<Path> getFilesFromDataset(String datasetName);
 
