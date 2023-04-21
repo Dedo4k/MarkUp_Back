@@ -33,11 +33,6 @@ public class DatasetController {
         this.datasetService = datasetService;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("Test");
-    }
-
     @GetMapping("/list")
     public ResponseEntity<List<String>> getFiles(@PathParam("filename") String filename) throws IOException {
         List<String> paths = Files.list(Path.of(filename)).map(Path::toString).toList();
@@ -47,11 +42,6 @@ public class DatasetController {
     @GetMapping("/datasets")
     public ResponseEntity<List<Dataset>> getLoadedDatasets() {
         return ResponseEntity.ok(datasetService.getLoadedDatasets());
-    }
-
-    @GetMapping("/datasets/available")
-    public ResponseEntity<List<Dataset>> getAvailableDatasets(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(Collections.emptyList());
     }
 
     @GetMapping("/datasets/{datasetName}/size")
