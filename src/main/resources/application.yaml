@@ -1,3 +1,23 @@
 spring:
   datasource:
-    username: root
+    username: postgres
+    password: root
+    url: jdbc:postgresql://localhost:5432/markup
+  jpa:
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-master.yaml
+  security:
+    user:
+      name: root
+      password: password
+datasets:
+  storage:
+    location: ./datasets
+  extensions:
+    image: jpg, JPG, png, PNG, jpeg, JPEG
+    layout: json, xml

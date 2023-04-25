@@ -1,0 +1,135 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: username
+                  value: root
+              - column:
+                  name: password
+                  value: $2a$10$LZttRIBfdTwIJIa4hROM6OrrAZKB6WfCLnBHg5AICYFr9sV.LBTSG
+              - column:
+                  name: enabled
+                  value: true
+              - column:
+                  name: expired
+                  value: false
+              - column:
+                  name: expired_credentials
+                  value: false
+              - column:
+                  name: locked
+                  value: false
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: ROLE_ADMIN
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_USER_CREATE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_USER_DELETE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_USER_UPDATE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_DATASET_CREATE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_DATASET_DELETE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_DATASET_MODERATE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_USER_CREATE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_USER_DELETE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_USER_UPDATE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_DATASET_CREATE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_DATASET_DELETE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_DATASET_MODERATE
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: roles_id
+                  value: ROLE_ADMIN
