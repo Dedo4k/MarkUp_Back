@@ -17,6 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +65,14 @@ public class LocalDatasetService implements DatasetService {
     public Dataset getDatasetByName(String datasetName) {
         Dataset dataset = new Dataset();
         dataset.setName(datasetName);
+        try {
+            BasicFileAttributes fileAttributes = Files.readAttributes(Paths.get(path).resolve(datasetName),
+                    BasicFileAttributes.class);
+            dataset.setCreatedAt(LocalDateTime.ofInstant(fileAttributes.creationTime().toInstant(), ZoneId.systemDefault()));
+            dataset.setUpdatedAt(LocalDateTime.ofInstant(fileAttributes.lastModifiedTime().toInstant(), ZoneId.systemDefault()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return dataset;
     }
 
