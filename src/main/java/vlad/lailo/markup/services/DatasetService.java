@@ -3,6 +3,7 @@ package vlad.lailo.markup.services;
 import org.springframework.web.multipart.MultipartFile;
 import vlad.lailo.markup.models.Data;
 import vlad.lailo.markup.models.Dataset;
+import vlad.lailo.markup.models.User;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -13,7 +14,7 @@ public interface DatasetService {
 
     List<Dataset> getLoadedDatasets();
 
-    void loadDataset();
+    void loadDatasets(List<String> datasetNames, User user);
 
     void deleteDataset();
 

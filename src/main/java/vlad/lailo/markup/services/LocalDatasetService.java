@@ -9,6 +9,9 @@ import vlad.lailo.markup.exceptions.DatasetNotFoundException;
 import vlad.lailo.markup.exceptions.StorageNotFoundException;
 import vlad.lailo.markup.models.Data;
 import vlad.lailo.markup.models.Dataset;
+import vlad.lailo.markup.models.User;
+import vlad.lailo.markup.repository.DatasetRepository;
+import vlad.lailo.markup.repository.UserRepository;
 import vlad.lailo.markup.utils.FileHelper;
 
 import java.io.IOException;
@@ -39,6 +42,15 @@ public class LocalDatasetService implements DatasetService {
     @Value("${datasets.extensions.layout}")
     private List<String> layoutExtensions;
 
+    private final DatasetRepository datasetRepository;
+
+    private final UserRepository userRepository;
+
+    public LocalDatasetService(DatasetRepository datasetRepository, UserRepository userRepository) {
+        this.datasetRepository = datasetRepository;
+        this.userRepository = userRepository;
+    }
+
     @Override
     public List<Dataset> getLoadedDatasets() {
         try (Stream<Path> stream = Files.list(Paths.get(path))) {
@@ -52,8 +64,14 @@ public class LocalDatasetService implements DatasetService {
     }
 
     @Override
-    public void loadDataset() {
-
+    public void loadDatasets(List<String> datasetNames, User user) {
+        datasetNames.forEach(datasetName -> {
+            Dataset dataset = datasetRepository.findById(datasetName).orElse(getDatasetByName(datasetName));
+            if (user.getDatasets().stream().noneMatch(d -> d.getName().equals(datasetName))) {
+                user.addDataset(dataset);
+                userRepository.save(user);
+            }
+        });
     }
 
     @Override
@@ -135,7 +153,7 @@ public class LocalDatasetService implements DatasetService {
     }
 
     private Data buildData(String datasetName, String dataName, List<Path> paths) throws DataImageNotFoundException {
-        if (paths == null || paths.isEmpty()){
+        if (paths == null || paths.isEmpty()) {
             throw new DataImageNotFoundException(dataName);
         }
         Data data = new Data();

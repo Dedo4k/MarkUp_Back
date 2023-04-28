@@ -5,7 +5,6 @@ import vlad.lailo.markup.models.Role;
 import vlad.lailo.markup.models.User;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,9 @@ public class UserDto {
 
     public boolean enabled;
 
-    public List<Dataset> datasets = new LinkedList<>();
+    public List<Dataset> datasets = new ArrayList<>();
+
+    public List<ModeratorDto> moderators = new ArrayList<>();
 
     public static UserDto fromModel(User user) {
         UserDto dto = new UserDto();
@@ -37,6 +38,7 @@ public class UserDto {
         dto.expiredCredentials = !user.isCredentialsNonExpired();
         dto.locked = !user.isAccountNonLocked();
         dto.datasets.addAll(user.getDatasets());
+        dto.moderators.addAll(user.getModerators().stream().map(ModeratorDto::fromModel).toList());
         return dto;
     }
 }

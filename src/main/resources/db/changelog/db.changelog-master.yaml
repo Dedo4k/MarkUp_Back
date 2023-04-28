@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/db.changelog-admin.yaml
   - include:
       file: db/changelog/db.changelog-datasets.yaml
+  - include:
+      file: db/changelog/db.changelog-moderators.yaml

@@ -1,14 +1,12 @@
 package vlad.lailo.markup.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,8 +20,10 @@ public class Dataset {
     private String name;
     @JsonBackReference
     @ManyToMany(mappedBy = "datasets")
-    private List<User> users = new LinkedList<>();
+    private List<User> users = new ArrayList<>();
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime updatedAt;
 
     //progress

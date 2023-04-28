@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -21,7 +20,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private final List<Role> roles = new ArrayList<>();
 
     private String username;
@@ -36,8 +35,11 @@ public class User implements UserDetails {
 
     private boolean enabled = true;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Dataset> datasets = new LinkedList<>();
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    private List<Dataset> datasets = new ArrayList<>();
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    private List<User> moderators = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -76,5 +78,18 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public void addDataset(Dataset dataset) {
+        this.datasets.add(dataset);
+        dataset.getUsers().add(this);
+    }
+
+    public void addModerator(User user) {
+        this.moderators.add(user);
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
 }
