@@ -4,8 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vlad.lailo.markup.models.dto.OperationDto;
 import vlad.lailo.markup.models.dto.RoleDto;
-import vlad.lailo.markup.repository.RolesRepository;
 import vlad.lailo.markup.services.RolesService;
 
 import java.util.List;
@@ -21,7 +21,12 @@ public class RolesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RoleDto>> getAllRole() {
+    public ResponseEntity<List<RoleDto>> getAllRoles() {
         return ResponseEntity.ok(rolesService.getAllRoles().stream().map(RoleDto::fromModel).toList());
+    }
+
+    @GetMapping("/ops")
+    public ResponseEntity<List<OperationDto>> getAllOperations() {
+        return ResponseEntity.ok(rolesService.getAllOperations().stream().map(OperationDto::fromModel).toList());
     }
 }

@@ -11,17 +11,17 @@ import vlad.lailo.markup.models.dto.UpdateUserDto;
 import vlad.lailo.markup.repository.UserRepository;
 
 @Service
-public class UserService {
+public class ModeratorService {
 
     private final DatasetService datasetService;
     private final RolesService rolesService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(@Qualifier("localDatasetService") DatasetService datasetService,
-                       UserRepository userRepository,
-                       RolesService rolesService,
-                       BCryptPasswordEncoder passwordEncoder) {
+    public ModeratorService(@Qualifier("localDatasetService") DatasetService datasetService,
+                            UserRepository userRepository,
+                            RolesService rolesService,
+                            BCryptPasswordEncoder passwordEncoder) {
         this.datasetService = datasetService;
         this.rolesService = rolesService;
         this.userRepository = userRepository;
