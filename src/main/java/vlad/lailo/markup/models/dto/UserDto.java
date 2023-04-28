@@ -1,5 +1,6 @@
 package vlad.lailo.markup.models.dto;
 
+import vlad.lailo.markup.models.Dataset;
 import vlad.lailo.markup.models.Role;
 import vlad.lailo.markup.models.User;
 
@@ -21,6 +22,10 @@ public class UserDto {
 
     public boolean enabled;
 
+    public List<Dataset> datasets = new ArrayList<>();
+
+    public List<ModeratorDto> moderators = new ArrayList<>();
+
     public static UserDto fromModel(User user) {
         UserDto dto = new UserDto();
         dto.username = user.getUsername();
@@ -32,6 +37,8 @@ public class UserDto {
         dto.expired = !user.isAccountNonExpired();
         dto.expiredCredentials = !user.isCredentialsNonExpired();
         dto.locked = !user.isAccountNonLocked();
+        dto.datasets.addAll(user.getDatasets());
+        dto.moderators.addAll(user.getModerators().stream().map(ModeratorDto::fromModel).toList());
         return dto;
     }
 }

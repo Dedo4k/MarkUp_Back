@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: datasets
+            columns:
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: datasets_pkey
+              - column:
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+  - changeSet:
+      id: 2
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: users_datasets
+            columns:
+              - column:
+                  name: users_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: datasets_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 3
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: users_id
+            baseTableName: users_datasets
+            constraintName: users_datasets-users-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: 4
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: datasets_name
+            baseTableName: users_datasets
+            constraintName: users_datasets-datasets-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: name
+            referencedTableName: datasets

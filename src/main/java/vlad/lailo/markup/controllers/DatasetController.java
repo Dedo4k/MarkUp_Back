@@ -16,7 +16,6 @@ import vlad.lailo.markup.services.StorageService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -70,5 +69,12 @@ public class DatasetController {
                                                       @PathVariable String dataName,
                                                       @RequestParam("file") MultipartFile layout) {
         return ResponseEntity.ok(datasetService.updateDataLayout(datasetName, dataName, layout));
+    }
+
+    @GetMapping("/datasets/load")
+    public ResponseEntity<List<Dataset>> loadDatasets(@RequestParam List<String> datasetNames,
+                                                      @AuthenticationPrincipal User user) {
+        datasetService.loadDatasets(datasetNames, user);
+        return ResponseEntity.ok(user.getDatasets());
     }
 }
