@@ -43,10 +43,6 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    public Collection<? extends GrantedAuthority> getAvailableOperations() {
         return roles.stream().map(Role::getAvailableOperations).flatMap(Collection::stream).toList();
     }
 

@@ -24,8 +24,7 @@ public class ModeratorDto {
         ModeratorDto dto = new ModeratorDto();
         dto.id = user.getId();
         dto.username = user.getUsername();
-        dto.roles = user.getAuthorities().stream()
-                .map(r -> (Role) r)
+        dto.roles = user.getRoles().stream()
                 .map(RoleDto::fromModel)
                 .collect(Collectors.toList());
         dto.datasets = user.getDatasets();

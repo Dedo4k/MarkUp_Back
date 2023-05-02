@@ -29,8 +29,7 @@ public class UserDto {
     public static UserDto fromModel(User user) {
         UserDto dto = new UserDto();
         dto.username = user.getUsername();
-        dto.roles = user.getAuthorities().stream()
-                .map(r -> (Role) r)
+        dto.roles = user.getRoles().stream()
                 .map(RoleDto::fromModel)
                 .collect(Collectors.toList());
         dto.enabled = user.isEnabled();
