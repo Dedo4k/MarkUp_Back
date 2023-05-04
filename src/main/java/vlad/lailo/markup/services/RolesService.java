@@ -1,6 +1,7 @@
 package vlad.lailo.markup.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vlad.lailo.markup.exceptions.*;
 import vlad.lailo.markup.models.Operation;
 import vlad.lailo.markup.models.Role;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
+@Transactional
 public class RolesService {
 
     private final RolesRepository rolesRepository;

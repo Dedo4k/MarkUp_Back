@@ -3,6 +3,7 @@ package vlad.lailo.markup.services;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vlad.lailo.markup.exceptions.ModeratorOwnerNotFoundException;
 import vlad.lailo.markup.exceptions.UserNotFoundException;
 import vlad.lailo.markup.models.User;
@@ -11,6 +12,7 @@ import vlad.lailo.markup.models.dto.UpdateUserDto;
 import vlad.lailo.markup.repository.UserRepository;
 
 @Service
+@Transactional
 public class ModeratorService {
 
     private final DatasetService datasetService;

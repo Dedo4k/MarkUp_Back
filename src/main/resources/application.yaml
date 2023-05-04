@@ -7,7 +7,7 @@ spring:
     show-sql: true
     generate-ddl: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
   liquibase:
     enabled: true
     change-log: db/changelog/db.changelog-master.yaml

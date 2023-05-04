@@ -19,7 +19,6 @@ databaseChangeLog:
                     nullable: false
                     unique: true
                     uniqueConstraintName: users_moderators_ukey
-
   - changeSet:
       id: 2
       author: lailo

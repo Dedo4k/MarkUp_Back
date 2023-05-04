@@ -6,6 +6,7 @@ import vlad.lailo.markup.models.Dataset;
 import vlad.lailo.markup.models.User;
 
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -24,7 +25,7 @@ public interface DatasetService {
 
     Data getDataFromDataset(String datasetName, String dataName);
 
-    Data updateDataLayout(String datasetName, String dataName, MultipartFile layout);
+    Data updateDataLayout(String datasetName, String dataName, LocalDateTime openedAt, LocalDateTime sendAt, MultipartFile file, User user);
 
     Stream<Path> getFilesFromDataset(String datasetName);
 

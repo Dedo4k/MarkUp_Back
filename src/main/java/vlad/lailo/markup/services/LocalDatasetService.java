@@ -2,15 +2,15 @@ package vlad.lailo.markup.services;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import vlad.lailo.markup.exceptions.DataImageNotFoundException;
-import vlad.lailo.markup.exceptions.DataLayoutNotFoundException;
-import vlad.lailo.markup.exceptions.DatasetNotFoundException;
-import vlad.lailo.markup.exceptions.StorageNotFoundException;
+import vlad.lailo.markup.exceptions.*;
 import vlad.lailo.markup.models.Data;
 import vlad.lailo.markup.models.Dataset;
+import vlad.lailo.markup.models.DatasetStatistic;
 import vlad.lailo.markup.models.User;
 import vlad.lailo.markup.repository.DatasetRepository;
+import vlad.lailo.markup.repository.DatasetStatisticsRepository;
 import vlad.lailo.markup.repository.UserRepository;
 import vlad.lailo.markup.utils.FileHelper;
 
@@ -21,8 +21,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Transactional
 public class LocalDatasetService implements DatasetService {
 
     @Value("${datasets.storage.location}")
@@ -46,9 +49,14 @@ public class LocalDatasetService implements DatasetService {
 
     private final UserRepository userRepository;
 
-    public LocalDatasetService(DatasetRepository datasetRepository, UserRepository userRepository) {
+    private final DatasetStatisticsRepository datasetStatisticsRepository;
+
+    public LocalDatasetService(DatasetRepository datasetRepository,
+                               UserRepository userRepository,
+                               DatasetStatisticsRepository datasetStatisticsRepository) {
         this.datasetRepository = datasetRepository;
         this.userRepository = userRepository;
+        this.datasetStatisticsRepository = datasetStatisticsRepository;
     }
 
     @Override
@@ -67,11 +75,18 @@ public class LocalDatasetService implements DatasetService {
     public void loadDatasets(List<String> datasetNames, User user) {
         datasetNames.forEach(datasetName -> {
             Dataset dataset = datasetRepository.findById(datasetName).orElse(getDatasetByName(datasetName));
+            if (datasetStatisticsRepository.findByDataset_NameAndUser_Id(datasetName, user.getId()).isEmpty()) {
+                DatasetStatistic datasetStatistic = new DatasetStatistic();
+                datasetStatistic.setDataset(dataset);
+                datasetStatistic.setUser(user);
+                datasetStatistic.setModeratingTime(Duration.ZERO);
+                dataset.getDatasetStatistics().add(datasetStatistic);
+            }
             if (user.getDatasets().stream().noneMatch(d -> d.getName().equals(datasetName))) {
                 user.addDataset(dataset);
-                userRepository.save(user);
             }
         });
+        userRepository.save(user);
     }
 
     @Override
@@ -118,19 +133,28 @@ public class LocalDatasetService implements DatasetService {
     }
 
     @Override
-    public Data updateDataLayout(String datasetName, String dataName, MultipartFile layout) {
+    public Data updateDataLayout(String datasetName, String dataName, LocalDateTime openedAt, LocalDateTime sendAt, MultipartFile file, User user) {
+
+        DatasetStatistic datasetStatistic = datasetStatisticsRepository.findByDataset_NameAndUser_Id(datasetName, user.getId())
+                .orElseThrow(() -> new DatasetStatisticsNotFoundException(dataName, user.getId()));
+
         Path layoutPath = null;
         try {
             layoutPath = getLayoutPath(getDataMap(datasetName).get(dataName));
         } catch (DataLayoutNotFoundException e) {
-            layoutPath = Paths.get(path).resolve(datasetName).resolve(Objects.requireNonNull(layout.getOriginalFilename()));
+            layoutPath = Paths.get(path).resolve(datasetName).resolve(Objects.requireNonNull(file.getOriginalFilename()));
         }
 
-        try (InputStream is = layout.getInputStream()) {
+        try (InputStream is = file.getInputStream()) {
             Files.copy(is, layoutPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
             throw new RuntimeException("File update failed.");
         }
+
+        datasetStatistic.setModeratingTime(datasetStatistic.getModeratingTime()
+                .plus(Duration.between(openedAt, sendAt)));
+
+        datasetStatisticsRepository.save(datasetStatistic);
 
         return getDataFromDataset(datasetName, dataName);
     }
