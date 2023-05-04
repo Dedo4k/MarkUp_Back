@@ -31,8 +31,7 @@ public class UserStatistic {
 
     private Duration totalTimeWorked;
 
-    @Transient
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToMany(fetch = FetchType.EAGER)
     private List<DatasetStatistic> datasetStatistics = new ArrayList<>();
 
     private long filesChecked;

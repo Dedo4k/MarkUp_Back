@@ -17,7 +17,7 @@ public class Role implements GrantedAuthority {
     @Id
     private String id;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private final List<Operation> operations = new ArrayList<>();
 
     @Override

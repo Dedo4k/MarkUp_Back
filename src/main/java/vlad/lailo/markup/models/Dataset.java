@@ -26,7 +26,7 @@ public class Dataset {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime updatedAt;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "dataset",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<DatasetStatistic> datasetStatistics = new ArrayList<>();
     //progress
     //owner

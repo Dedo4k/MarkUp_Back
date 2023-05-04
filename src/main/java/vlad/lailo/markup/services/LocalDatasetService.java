@@ -101,8 +101,8 @@ public class LocalDatasetService implements DatasetService {
         try {
             BasicFileAttributes fileAttributes = Files.readAttributes(Paths.get(path).resolve(datasetName),
                     BasicFileAttributes.class);
-            dataset.setCreatedAt(LocalDateTime.ofInstant(fileAttributes.creationTime().toInstant(), ZoneId.systemDefault()));
-            dataset.setUpdatedAt(LocalDateTime.ofInstant(fileAttributes.lastModifiedTime().toInstant(), ZoneId.systemDefault()));
+            dataset.setCreatedAt(getDatasetCreationTime(datasetName));
+            dataset.setUpdatedAt(getDatasetLastModifiedTime(datasetName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -135,6 +135,7 @@ public class LocalDatasetService implements DatasetService {
     @Override
     public Data updateDataLayout(String datasetName, String dataName, LocalDateTime openedAt, LocalDateTime sendAt, MultipartFile file, User user) {
 
+        Dataset dataset = datasetRepository.findById(datasetName).orElseThrow(() -> new DatasetNotFoundException(datasetName));
         DatasetStatistic datasetStatistic = datasetStatisticsRepository.findByDataset_NameAndUser_Id(datasetName, user.getId())
                 .orElseThrow(() -> new DatasetStatisticsNotFoundException(dataName, user.getId()));
 
@@ -151,10 +152,11 @@ public class LocalDatasetService implements DatasetService {
             throw new RuntimeException("File update failed.");
         }
 
+        dataset.setUpdatedAt(getDatasetLastModifiedTime(datasetName));
         datasetStatistic.setModeratingTime(datasetStatistic.getModeratingTime()
                 .plus(Duration.between(openedAt, sendAt)));
 
-        datasetStatisticsRepository.save(datasetStatistic);
+        datasetRepository.save(dataset);
 
         return getDataFromDataset(datasetName, dataName);
     }
@@ -215,5 +217,25 @@ public class LocalDatasetService implements DatasetService {
                 .filter(path -> layoutExtensions.contains(FileHelper.fileExtension(path.toString())))
                 .findFirst()
                 .orElseThrow(DataLayoutNotFoundException::new);
+    }
+
+    private LocalDateTime getDatasetCreationTime(String datasetName) {
+        try {
+            BasicFileAttributes fileAttributes = Files.readAttributes(Paths.get(path).resolve(datasetName),
+                    BasicFileAttributes.class);
+            return LocalDateTime.ofInstant(fileAttributes.creationTime().toInstant(), ZoneOffset.UTC);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private LocalDateTime getDatasetLastModifiedTime(String datasetName) {
+        try {
+            BasicFileAttributes fileAttributes = Files.readAttributes(Paths.get(path).resolve(datasetName),
+                    BasicFileAttributes.class);
+            return LocalDateTime.ofInstant(fileAttributes.lastModifiedTime().toInstant(), ZoneOffset.UTC);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

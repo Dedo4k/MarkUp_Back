@@ -35,14 +35,17 @@ public class User implements UserDetails {
 
     private boolean enabled = true;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Dataset> datasets = new ArrayList<>();
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     private List<User> moderators = new ArrayList<>();
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    private List<UserStatistic> statistics = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<UserStatistic> userStatistics = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DatasetStatistic> datasetStatistics= new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

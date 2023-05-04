@@ -38,9 +38,9 @@ public class ModeratorService {
         User user = new User();
         user.setUsername(createUserDto.username);
         user.setPassword(passwordEncoder.encode(createUserDto.password));
-        datasetService.loadDatasets(createUserDto.datasets, user);
         createUserDto.roles.forEach(role -> user.addRole(rolesService.getRole(role)));
         userRepository.save(user);
+        datasetService.loadDatasets(createUserDto.datasets, user);
         owner.addModerator(user);
         userRepository.save(owner);
         return user;
@@ -66,6 +66,12 @@ public class ModeratorService {
                 .orElseThrow(() -> new ModeratorOwnerNotFoundException(id));
         owner.getModerators().remove(user);
         userRepository.save(owner);
+        user.getDatasets().forEach(dataset -> {
+            dataset.getUsers().remove(user);
+            dataset.getDatasetStatistics().removeAll(user.getDatasetStatistics());
+        });
+        user.getDatasetStatistics().clear();
+        user.getUserStatistics().clear();
         userRepository.delete(user);
         return user;
     }
