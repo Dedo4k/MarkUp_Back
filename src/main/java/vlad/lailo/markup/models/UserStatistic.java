@@ -7,8 +7,6 @@ import lombok.Setter;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -31,9 +29,7 @@ public class UserStatistic {
 
     private Duration totalTimeWorked;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<DatasetStatistic> datasetStatistics = new ArrayList<>();
-
     private long filesChecked;
+
     private long objectsChanged;
 }

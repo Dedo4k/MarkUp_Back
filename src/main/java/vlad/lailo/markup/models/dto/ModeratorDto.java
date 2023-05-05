@@ -16,6 +16,8 @@ public class ModeratorDto {
 
     public List<DatasetDto> datasets = new ArrayList<>();
 
+    public List<UserStatisticDto> userStatistics = new ArrayList<>();
+
     public static ModeratorDto fromModel(User user) {
         ModeratorDto dto = new ModeratorDto();
         dto.id = user.getId();
@@ -24,6 +26,7 @@ public class ModeratorDto {
                 .map(RoleDto::fromModel)
                 .collect(Collectors.toList());
         dto.datasets = user.getDatasets().stream().map(DatasetDto::fromModel).toList();
+        dto.userStatistics.addAll(user.getUserStatistics().stream().map(UserStatisticDto::fromModel).toList());
         return dto;
     }
 }

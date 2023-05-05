@@ -17,7 +17,7 @@ public class DatasetDto {
 
     public LocalDateTime updatedAt;
 
-    public List<DatasetStatisticsDto> datasetStatistics = new ArrayList<>();
+    public List<DatasetStatisticDto> datasetStatistics = new ArrayList<>();
 
     public static DatasetDto fromModel(Dataset dataset) {
         DatasetDto dto = new DatasetDto();
@@ -26,7 +26,7 @@ public class DatasetDto {
         dto.updatedAt = dataset.getUpdatedAt();
         dto.userIds.addAll(dataset.getUsers().stream().map(User::getId).toList());
         dto.datasetStatistics.addAll(dataset.getDatasetStatistics().stream()
-                .map(DatasetStatisticsDto::fromModel).toList());
+                .map(DatasetStatisticDto::fromModel).toList());
         return dto;
     }
 }

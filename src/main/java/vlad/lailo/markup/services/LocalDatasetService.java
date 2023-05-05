@@ -5,13 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import vlad.lailo.markup.exceptions.*;
-import vlad.lailo.markup.models.Data;
-import vlad.lailo.markup.models.Dataset;
-import vlad.lailo.markup.models.DatasetStatistic;
-import vlad.lailo.markup.models.User;
+import vlad.lailo.markup.models.*;
 import vlad.lailo.markup.repository.DatasetRepository;
 import vlad.lailo.markup.repository.DatasetStatisticsRepository;
 import vlad.lailo.markup.repository.UserRepository;
+import vlad.lailo.markup.repository.UserStatisticsRepository;
 import vlad.lailo.markup.utils.FileHelper;
 
 import java.io.IOException;
@@ -22,8 +20,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +48,16 @@ public class LocalDatasetService implements DatasetService {
     private final UserRepository userRepository;
 
     private final DatasetStatisticsRepository datasetStatisticsRepository;
+    private final UserStatisticsRepository userStatisticsRepository;
 
     public LocalDatasetService(DatasetRepository datasetRepository,
                                UserRepository userRepository,
-                               DatasetStatisticsRepository datasetStatisticsRepository) {
+                               DatasetStatisticsRepository datasetStatisticsRepository,
+                               UserStatisticsRepository userStatisticsRepository) {
         this.datasetRepository = datasetRepository;
         this.userRepository = userRepository;
         this.datasetStatisticsRepository = datasetStatisticsRepository;
+        this.userStatisticsRepository = userStatisticsRepository;
     }
 
     @Override
@@ -139,6 +140,18 @@ public class LocalDatasetService implements DatasetService {
         DatasetStatistic datasetStatistic = datasetStatisticsRepository.findByDataset_NameAndUser_Id(datasetName, user.getId())
                 .orElseThrow(() -> new DatasetStatisticsNotFoundException(dataName, user.getId()));
 
+        LocalDate date = LocalDate.now(ZoneOffset.UTC);
+        LocalDateTime dateTime = LocalDateTime.now(ZoneOffset.UTC);
+        UserStatistic userStatistic = userStatisticsRepository.findByDateAndUser_Id(date, user.getId()).orElseGet(() -> {
+            UserStatistic userStat = new UserStatistic();
+            userStat.setUser(user);
+            userStat.setDate(date);
+            userStat.setLastUpdateAt(dateTime);
+            userStat.setTotalTimeWorked(Duration.ZERO);
+            user.getUserStatistics().add(userStat);
+            return userStat;
+        });
+
         Path layoutPath = null;
         try {
             layoutPath = getLayoutPath(getDataMap(datasetName).get(dataName));
@@ -152,11 +165,16 @@ public class LocalDatasetService implements DatasetService {
             throw new RuntimeException("File update failed.");
         }
 
-        dataset.setUpdatedAt(getDatasetLastModifiedTime(datasetName));
+        dataset.setUpdatedAt(dateTime);
+        userStatistic.setLastUpdateAt(dateTime);
+        Duration duration = Duration.between(openedAt, sendAt);
         datasetStatistic.setModeratingTime(datasetStatistic.getModeratingTime()
-                .plus(Duration.between(openedAt, sendAt)));
+                .plus(duration));
+        userStatistic.setTotalTimeWorked(userStatistic.getTotalTimeWorked().plus(duration));
+        userStatistic.setFilesChecked(userStatistic.getFilesChecked() + 1);
 
         datasetRepository.save(dataset);
+        userStatisticsRepository.save(userStatistic);
 
         return getDataFromDataset(datasetName, dataName);
     }
