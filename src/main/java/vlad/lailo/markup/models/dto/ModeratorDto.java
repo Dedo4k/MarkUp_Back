@@ -1,9 +1,5 @@
 package vlad.lailo.markup.models.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import vlad.lailo.markup.models.Dataset;
-import vlad.lailo.markup.models.Role;
 import vlad.lailo.markup.models.User;
 
 import java.util.ArrayList;
@@ -18,17 +14,19 @@ public class ModeratorDto {
 
     public List<RoleDto> roles = new ArrayList<>();
 
-    public List<Dataset> datasets = new ArrayList<>();
+    public List<DatasetDto> datasets = new ArrayList<>();
+
+    public List<UserStatisticDto> userStatistics = new ArrayList<>();
 
     public static ModeratorDto fromModel(User user) {
         ModeratorDto dto = new ModeratorDto();
         dto.id = user.getId();
         dto.username = user.getUsername();
-        dto.roles = user.getAuthorities().stream()
-                .map(r -> (Role) r)
+        dto.roles = user.getRoles().stream()
                 .map(RoleDto::fromModel)
                 .collect(Collectors.toList());
-        dto.datasets = user.getDatasets();
+        dto.datasets = user.getDatasets().stream().map(DatasetDto::fromModel).toList();
+        dto.userStatistics.addAll(user.getUserStatistics().stream().map(UserStatisticDto::fromModel).toList());
         return dto;
     }
 }

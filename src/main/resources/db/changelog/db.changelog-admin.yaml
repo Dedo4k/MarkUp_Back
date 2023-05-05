@@ -36,19 +36,31 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  value: OP_USER_CREATE
+                  value: OP_MODERATOR_READ
         - insert:
             tableName: operations
             columns:
               - column:
                   name: id
-                  value: OP_USER_DELETE
+                  value: OP_MODERATOR_CREATE
         - insert:
             tableName: operations
             columns:
               - column:
                   name: id
-                  value: OP_USER_UPDATE
+                  value: OP_MODERATOR_UPDATE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_MODERATOR_DELETE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_DATASET_READ
         - insert:
             tableName: operations
             columns:
@@ -66,7 +78,31 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  value: OP_DATASET_MODERATE
+                  value: OP_DATASET_UPDATE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_ROLE_READ
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_ROLE_CREATE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_ROLE_DELETE
+        - insert:
+            tableName: operations
+            columns:
+              - column:
+                  name: id
+                  value: OP_ROLE_UPDATE
         - insert:
             tableName: roles_operations
             columns:
@@ -75,7 +111,7 @@ databaseChangeLog:
                   value: ROLE_ADMIN
               - column:
                   name: operations_id
-                  value: OP_USER_CREATE
+                  value: OP_MODERATOR_READ
         - insert:
             tableName: roles_operations
             columns:
@@ -84,7 +120,7 @@ databaseChangeLog:
                   value: ROLE_ADMIN
               - column:
                   name: operations_id
-                  value: OP_USER_DELETE
+                  value: OP_MODERATOR_CREATE
         - insert:
             tableName: roles_operations
             columns:
@@ -93,7 +129,25 @@ databaseChangeLog:
                   value: ROLE_ADMIN
               - column:
                   name: operations_id
-                  value: OP_USER_UPDATE
+                  value: OP_MODERATOR_DELETE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_MODERATOR_UPDATE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_DATASET_READ
         - insert:
             tableName: roles_operations
             columns:
@@ -120,7 +174,43 @@ databaseChangeLog:
                   value: ROLE_ADMIN
               - column:
                   name: operations_id
-                  value: OP_DATASET_MODERATE
+                  value: OP_DATASET_UPDATE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_ROLE_READ
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_ROLE_CREATE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_ROLE_DELETE
+        - insert:
+            tableName: roles_operations
+            columns:
+              - column:
+                  name: role_id
+                  value: ROLE_ADMIN
+              - column:
+                  name: operations_id
+                  value: OP_ROLE_UPDATE
         - insert:
             tableName: users_roles
             columns:

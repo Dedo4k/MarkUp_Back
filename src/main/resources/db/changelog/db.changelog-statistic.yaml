@@ -1,0 +1,210 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: dataset_statistics
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: dataset_statistics_pkey
+              - column:
+                  name: moderating_time
+                  type: NUMERIC(21,0)
+              - column:
+                  name: dataset_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: datasets_dataset_statistics
+            columns:
+              - column:
+                  name: dataset_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dataset_statistics_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: datasets_dataset_statistics_ukey
+  - changeSet:
+      id: 3
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: user_statistics
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: user_statistics_pkey
+              - column:
+                  name: date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: files_checked
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: objects_changed
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_time_worked
+                  type: NUMERIC(21,0)
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 4
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: user_statistics_dataset_statistics
+            columns:
+              - column:
+                  name: user_statistic_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dataset_statistics_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: user_statistics_dataset_statistics_ukey
+  - changeSet:
+      id: 5
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            tableName: users_statistics
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: statistics_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: users_statistics_ukey
+  - changeSet:
+      id: 6
+      author: lailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: dataset_name
+            baseTableName: dataset_statistics
+            constraintName: dataset_statistics-datasets-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: name
+            referencedTableName: datasets
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: dataset_statistics
+            constraintName: dataset_statistics-users-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+        - addForeignKeyConstraint:
+            baseColumnNames: dataset_statistics_id
+            baseTableName: datasets_dataset_statistics
+            constraintName: datasets_dataset_statistics-dataset_statistics-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: dataset_statistics
+        - addForeignKeyConstraint:
+            baseColumnNames: dataset_name
+            baseTableName: datasets_dataset_statistics
+            constraintName: datasets_dataset_statistics-datasets-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: name
+            referencedTableName: datasets
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_statistics
+            constraintName: user_statistics-users-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+        - addForeignKeyConstraint:
+            baseColumnNames: dataset_statistics_id
+            baseTableName: user_statistics_dataset_statistics
+            constraintName: user_statistics_dataset_statistics-dataset_statistics-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: dataset_statistics
+        - addForeignKeyConstraint:
+            baseColumnNames: user_statistic_id
+            baseTableName: user_statistics_dataset_statistics
+            constraintName: user_statistics_dataset_statistics-user_statistics-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: user_statistics
+        - addForeignKeyConstraint:
+            baseColumnNames: statistics_id
+            baseTableName: users_statistics
+            constraintName: users_statistics-user_statistics-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: user_statistics
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: users_statistics
+            constraintName: users_statistics-users-fk
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
