@@ -12,6 +12,7 @@ import vlad.lailo.markup.repository.UserRepository;
 import vlad.lailo.markup.repository.UserStatisticsRepository;
 import vlad.lailo.markup.utils.FileHelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -70,6 +71,24 @@ public class LocalDatasetService implements DatasetService {
         } catch (IOException e) {
             throw new StorageNotFoundException(path);
         }
+    }
+
+    @Override
+    public boolean uploadDataset(String datasetName, MultipartFile file) {
+        Path copyTo = Paths.get(path).resolve(Objects.requireNonNull(file.getOriginalFilename()));
+        if (!copyTo.toFile().exists()) {
+            try {
+                Files.createDirectories(copyTo.getParent());
+            } catch (IOException e) {
+                throw new RuntimeException("File upload failed.");
+            }
+        }
+        try (InputStream is = file.getInputStream()) {
+            Files.copy(is, copyTo, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            throw new RuntimeException("File upload failed.");
+        }
+        return true;
     }
 
     @Override

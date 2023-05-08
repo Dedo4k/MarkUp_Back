@@ -15,6 +15,8 @@ public interface DatasetService {
 
     List<Dataset> getLoadedDatasets();
 
+    boolean uploadDataset(String datasetName, MultipartFile file);
+
     void loadDatasets(List<String> datasetNames, User user);
 
     void deleteDataset();

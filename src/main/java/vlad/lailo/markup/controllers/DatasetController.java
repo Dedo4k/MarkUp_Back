@@ -57,9 +57,16 @@ public class DatasetController {
     }
 
     @PutMapping("/load")
-    public ResponseEntity<List<DatasetDto>> loadDatasets(@RequestBody List<String> datasetNames,
-                                                         @AuthenticationPrincipal User user) {
+    public ResponseEntity<List<DatasetDto>> loadExistingDatasets(@RequestBody List<String> datasetNames,
+                                                                 @AuthenticationPrincipal User user) {
         datasetService.loadDatasets(datasetNames, user);
         return ResponseEntity.ok(user.getDatasets().stream().map(DatasetDto::fromModel).toList());
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<Boolean> loadNewDataset(
+            @RequestParam String datasetName,
+            @RequestParam MultipartFile file) {
+        return ResponseEntity.ok(datasetService.uploadDataset(datasetName, file));
     }
 }
